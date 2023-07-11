@@ -1,0 +1,56 @@
+/*
+  This file exists to make pf3 compatible with pf4.
+  When migrating from pf3 to pf4, some styles might be removable.
+*/
+
+/*
+  Basic fonts and colors overrides
+ */
+html {
+  font-family: sans-serif;
+  line-height: 1.15;
+}
+
+body {
+  font-family: var(--pf-global--FontFamily--sans-serif);
+  font-size: var(--pf-global--FontSize--sm);
+  font-weight: var(--pf-global--FontWeight--normal);
+  line-height: var(--pf-global--LineHeight--md);
+  text-align: left;
+}
+
+a {
+  font-weight: var(--pf-global--link--FontWeight);
+  color: var(--pf-global--link--Color);
+  text-decoration: var(--pf-global--link--TextDecoration);
+
+  &:hover {
+    --pf-global--link--Color: var(--pf-global--link--Color--hover);
+    --pf-global--link--TextDecoration: var(--pf-global--link--TextDecoration--hover);
+  }
+}
+
+/*
+  PF3-Tables overrides
+ */
+.table {
+  & > thead,
+  & > tbody,
+  & > tfoot {
+    & > tr {
+      // fix line-height to be compatible with pf4 fonts
+      & > th,
+      & > td {
+        line-height: inherit;
+      }
+      // fix headers to be bold
+      & > th a {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.pf-c-alert h4 {
+  line-height: var(--pf-global--LineHeight--md);
+}

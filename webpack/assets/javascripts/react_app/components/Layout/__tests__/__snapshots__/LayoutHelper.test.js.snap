@@ -1,0 +1,170 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LayoutHelper should combineMenuItems 1`] = `
+Array [
+  Object {
+    "children": Array [
+      Object {
+        "exact": true,
+        "html_options": Object {},
+        "name": "Dashboard",
+        "title": "Dashboard",
+        "type": "item",
+        "url": "/",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Facts",
+        "title": "Facts",
+        "type": "item",
+        "url": "/fact_values",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Audits",
+        "title": "Audits",
+        "type": "item",
+        "url": "/audits",
+      },
+      Object {
+        "name": "Reports",
+        "title": "Reports",
+        "type": "divider",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Config Management",
+        "title": "Config Management",
+        "type": "item",
+        "url": "/config_reports?search=eventful+%3D+true",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Report Templates",
+        "title": "Report Templates",
+        "type": "item",
+        "url": "/templates/report_templates",
+      },
+    ],
+    "className": "",
+    "icon": "fa fa-tachometer",
+    "name": "Monitor",
+    "type": "sub_menu",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "All Hosts",
+        "title": "All Hosts",
+        "type": "item",
+        "url": "/hosts",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Create Host",
+        "title": "Create Host",
+        "type": "item",
+        "url": "/hosts/new",
+      },
+      Object {
+        "name": "Provisioning Setup",
+        "title": "Provisioning Setup",
+        "type": "divider",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Architectures",
+        "title": "Architectures",
+        "type": "item",
+        "url": "/architectures",
+      },
+    ],
+    "className": "",
+    "icon": "fa fa-server",
+    "name": "Hosts",
+    "type": "sub_menu",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Host Groups",
+        "title": "Host Groups",
+        "type": "item",
+        "url": "/hostgroups",
+      },
+      Object {
+        "exact": false,
+        "html_options": Object {},
+        "name": "Global Parameters",
+        "title": "Global Parameters",
+        "type": "item",
+        "url": "/common_parameters",
+      },
+    ],
+    "className": "",
+    "icon": "fa fa-wrench",
+    "name": "Configure",
+    "type": "sub_menu",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "name": "Any Organization",
+        "onClick": [Function],
+        "title": "Any Organization",
+      },
+      Object {
+        "name": "org1",
+        "onClick": [Function],
+        "title": "org1",
+        "type": undefined,
+      },
+      Object {
+        "name": "org2",
+        "onClick": [Function],
+        "title": "org2",
+        "type": undefined,
+      },
+    ],
+    "className": "organization-menu hidden-nav-lg",
+    "icon": "fa fa-building",
+    "name": "Organizations",
+    "type": "sub_menu",
+  },
+  Object {
+    "children": Array [
+      Object {
+        "name": "Any Location",
+        "onClick": [Function],
+        "title": "Any Location",
+      },
+      Object {
+        "name": "london",
+        "onClick": [Function],
+        "title": "london",
+        "type": undefined,
+      },
+      Object {
+        "name": "norway",
+        "onClick": [Function],
+        "title": "norway",
+        "type": undefined,
+      },
+    ],
+    "className": "location-menu hidden-nav-lg",
+    "icon": "fa fa-globe",
+    "name": "Locations",
+    "type": "sub_menu",
+  },
+]
+`;

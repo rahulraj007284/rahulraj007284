@@ -1,0 +1,73 @@
+#!/bin/bash
+
+
+echo "" > /etc/hostname
+
+hostname 
+
+cat > /etc/hosts << EOF
+127.0.0.1   snapshot-ipv4-dhcp-deb10  localhost localhost.localdomain
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+EOF
+
+
+
+
+
+
+
+
+
+echo "blacklist amodule" >> /etc/modprobe.d/blacklist.conf
+
+
+
+
+apt-get update
+apt-get install -y puppet
+
+cat > /etc/puppet/puppet.conf << EOF
+[main]
+vardir = /var/lib/puppet
+logdir = /var/log/puppet
+rundir = /var/run/puppet
+ssldir = \$vardir/ssl
+
+[agent]
+pluginsync      = true
+report          = true
+certname        = snapshot-ipv4-dhcp-deb10
+
+EOF
+
+
+if [ -f "/etc/default/puppet" ]
+then
+/bin/sed -i 's/^START=no/START=yes/' /etc/default/puppet
+fi
+/usr/bin/puppet agent --enable
+
+# export a custom fact called 'is_installer' to allow detection of the installer environment in Puppet modules
+export FACTER_is_installer=true
+# passing a non-existent tag like "no_such_tag" to the puppet agent only initializes the node
+# You can select specific tag(s) with the "run-puppet-in-installer-tags" parameter
+# or set a full puppet run by setting "run-puppet-in-installer" = true
+echo "Performing initial puppet run for --tags no_such_tag"
+/usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag  --no-daemonize
+systemctl enable puppet
+
+
+
+# UserData still needs wget to mark as finished
+if [ -x /usr/bin/curl ]; then
+  /usr/bin/curl -o /dev/null --noproxy \* -H 'Content-Type: text/plain' --silent 'http://foreman.example.com/unattended/built'
+elif [ -x /usr/bin/wget ]; then
+  /usr/bin/wget -q -O /dev/null --no-proxy --method POST --header 'Content-Type: text/plain' 'http://foreman.example.com/unattended/built'
+else
+  wget -q -O /dev/null --header 'Content-Type: text/plain' 'http://foreman.example.com/unattended/built'
+fi
+

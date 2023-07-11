@@ -1,0 +1,84 @@
+
+#cloud-config
+hostname: snapshot-ipv4-dhcp-el7
+fqdn: snapshot-ipv4-dhcp-el7
+manage_etc_hosts: true
+users: {}
+runcmd:
+- |
+  echo "" > /etc/hostname
+  
+  hostname 
+  
+  cat > /etc/hosts << EOF
+  127.0.0.1   snapshot-ipv4-dhcp-el7  localhost localhost.localdomain
+  ::1     ip6-localhost ip6-loopback
+  fe00::0 ip6-localnet
+  ff00::0 ip6-mcastprefix
+  ff02::1 ip6-allnodes
+  ff02::2 ip6-allrouters
+  EOF
+- |
+  
+- |
+  
+  echo "Updating system time"
+  systemctl enable --now chronyd
+  /usr/bin/chronyc -a makestep
+  /usr/sbin/hwclock --systohc
+- |
+  rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+- |
+  
+  
+  
+  
+  
+  
+- |
+- |
+  
+
+- |
+  echo "blacklist amodule" >> /etc/modprobe.d/blacklist.conf
+
+- |
+- |
+
+  if [ -f /usr/bin/dnf ]; then
+    dnf -y install puppet
+  else
+    yum -t -y install puppet
+  fi
+  
+  cat > /etc/puppet/puppet.conf << EOF
+  [main]
+  vardir = /var/lib/puppet
+  logdir = /var/log/puppet
+  rundir = /var/run/puppet
+  ssldir = \$vardir/ssl
+  
+  [agent]
+  pluginsync      = true
+  report          = true
+  certname        = snapshot-ipv4-dhcp-el7
+  
+  EOF
+  
+  
+  puppet_unit=puppet
+  /usr/bin/systemctl list-unit-files | grep -q puppetagent && puppet_unit=puppetagent
+  /usr/bin/systemctl enable ${puppet_unit}
+  
+  # export a custom fact called 'is_installer' to allow detection of the installer environment in Puppet modules
+  export FACTER_is_installer=true
+  # passing a non-existent tag like "no_such_tag" to the puppet agent only initializes the node
+  # You can select specific tag(s) with the "run-puppet-in-installer-tags" parameter
+  # or set a full puppet run by setting "run-puppet-in-installer" = true
+  echo "Performing initial puppet run for --tags no_such_tag"
+  /usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag  --no-daemonize
+
+phone_home:
+  url: http://foreman.example.com/unattended/built
+  post: []
+  tries: 10

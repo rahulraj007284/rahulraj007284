@@ -1,0 +1,4 @@
+---
+:require_ssl: false
+:fqdn: foreman.example.com
+:domain: example.com

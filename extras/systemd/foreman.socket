@@ -1,0 +1,13 @@
+[Unit]
+Description=Foreman HTTP Server Accept Sockets
+
+[Socket]
+ListenStream=3000
+
+# Socket options matching Puma defaults
+NoDelay=true
+ReusePort=true
+Backlog=1024
+
+[Install]
+WantedBy=sockets.target

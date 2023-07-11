@@ -1,0 +1,1 @@
+attributes :username, :provider, :virtual

@@ -1,0 +1,4 @@
+DEFAULT linux
+LABEL linux
+KERNEL undionly-ipxe.0
+IPAPPEND 2

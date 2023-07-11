@@ -1,0 +1,20 @@
+[Unit]
+Description=Foreman
+Documentation=https://theforeman.org
+After=network.target remote-fs.target nss-lookup.target
+Requires=foreman.socket
+
+[Service]
+Type=notify
+User=foreman
+TimeoutSec=300
+PrivateTmp=true
+WorkingDirectory=/usr/share/foreman
+ExecStart=/usr/share/foreman/bin/rails server --environment $FOREMAN_ENV
+Environment=FOREMAN_ENV=production
+Environment=MALLOC_ARENA_MAX=2
+
+SyslogIdentifier=foreman
+
+[Install]
+WantedBy=multi-user.target

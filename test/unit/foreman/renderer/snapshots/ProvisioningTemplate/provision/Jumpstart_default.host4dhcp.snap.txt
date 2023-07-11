@@ -1,0 +1,6 @@
+install_type 
+partitioning explicit
+
+system_type 
+package  add
+cluster 

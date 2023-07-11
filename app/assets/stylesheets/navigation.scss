@@ -1,0 +1,26 @@
+@import './colors.scss';
+
+.navbar {
+  .nav a {
+    font-size: 13px;
+  }
+  .active > a,
+  .open > a {
+    background: linear-gradient(
+      to bottom,
+      $hover_gradient_start,
+      $hover_gradient_end
+    );
+  }
+
+  .nav > li > a {
+    font-size: 14px;
+  }
+}
+
+.pf-c-masthead {
+  background: var(--pf-c-masthead--BackgroundColor) image-url('navbar.png');
+  .user-icon {
+    margin-right: 10px;
+  }
+}

@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fill actions should regiser a component 1`] = `
+Array [
+  Array [
+    Object {
+      "payload": Object {
+        "fillId": "fill-id",
+        "metadata": undefined,
+        "slotId": "slot-id",
+        "weight": 100,
+      },
+      "type": "SLOT_AND_FILL_REGISTER_FILL",
+    },
+  ],
+]
+`;
+
+exports[`Fill actions should unregiser a component 1`] = `
+Array [
+  Array [
+    Object {
+      "payload": Object {
+        "fillId": "fill-id",
+        "slotId": "slot-id",
+      },
+      "type": "SLOT_AND_FILL_REMOVE_FILLED_COMPONENT",
+    },
+  ],
+]
+`;

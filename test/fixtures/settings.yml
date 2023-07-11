@@ -1,0 +1,10 @@
+---
+attributes66:
+  name: delivery_method
+  value: :test
+attribute97:
+  name: ct_command
+  value: "['/usr/bin/cat']"
+attribute98:
+  name: fcct_command
+  value: "['/usr/bin/cat']"

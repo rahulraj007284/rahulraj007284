@@ -1,0 +1,18 @@
+---
+x86_64:
+  name: x86_64
+
+sparc:
+  name: sparc
+
+s390:
+  name: s390
+
+s390x:
+  name: s390x
+
+ASIC:
+  name: ASIC
+
+ppc64:
+  name: ppc64

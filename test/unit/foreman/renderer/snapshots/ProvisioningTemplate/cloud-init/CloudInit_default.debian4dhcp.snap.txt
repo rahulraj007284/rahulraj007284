@@ -1,0 +1,83 @@
+
+#cloud-config
+hostname: snapshot-ipv4-dhcp-deb10
+fqdn: snapshot-ipv4-dhcp-deb10
+manage_etc_hosts: true
+users: {}
+runcmd:
+- |
+  echo "" > /etc/hostname
+  
+  hostname 
+  
+  cat > /etc/hosts << EOF
+  127.0.0.1   snapshot-ipv4-dhcp-deb10  localhost localhost.localdomain
+  ::1     ip6-localhost ip6-loopback
+  fe00::0 ip6-localnet
+  ff00::0 ip6-mcastprefix
+  ff02::1 ip6-allnodes
+  ff02::2 ip6-allrouters
+  EOF
+- |
+  
+- |
+  
+  echo "Updating system time"
+  systemctl enable --now chronyd
+  /usr/bin/chronyc -a makestep
+  /usr/sbin/hwclock --systohc
+- |
+- |
+  
+  
+  
+  
+  
+  
+- |
+- |
+  
+
+- |
+  echo "blacklist amodule" >> /etc/modprobe.d/blacklist.conf
+
+- |
+- |
+
+  apt-get update
+  apt-get install -y puppet
+  
+  cat > /etc/puppet/puppet.conf << EOF
+  [main]
+  vardir = /var/lib/puppet
+  logdir = /var/log/puppet
+  rundir = /var/run/puppet
+  ssldir = \$vardir/ssl
+  
+  [agent]
+  pluginsync      = true
+  report          = true
+  certname        = snapshot-ipv4-dhcp-deb10
+  
+  EOF
+  
+  
+  if [ -f "/etc/default/puppet" ]
+  then
+  /bin/sed -i 's/^START=no/START=yes/' /etc/default/puppet
+  fi
+  /usr/bin/puppet agent --enable
+  
+  # export a custom fact called 'is_installer' to allow detection of the installer environment in Puppet modules
+  export FACTER_is_installer=true
+  # passing a non-existent tag like "no_such_tag" to the puppet agent only initializes the node
+  # You can select specific tag(s) with the "run-puppet-in-installer-tags" parameter
+  # or set a full puppet run by setting "run-puppet-in-installer" = true
+  echo "Performing initial puppet run for --tags no_such_tag"
+  /usr/bin/puppet agent --config /etc/puppet/puppet.conf --onetime --tags no_such_tag  --no-daemonize
+  systemctl enable puppet
+
+phone_home:
+  url: http://foreman.example.com/unattended/built
+  post: []
+  tries: 10

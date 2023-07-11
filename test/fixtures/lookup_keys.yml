@@ -1,0 +1,67 @@
+---
+one:
+  key: port
+  key_type: integer
+  path: "hostgroup\ncomment\nfqdn"
+  validator_type:
+  default_value: 80
+  type: LookupKey
+
+three:
+  key: ssl
+  key_type: boolean
+  path: "fqdn\nhostgroup\nhostgroup,domain\nos"
+  validator_rule:
+  default_value: true
+  override: true
+  type: LookupKey
+
+complex:
+  key: cluster
+  key_type: string
+  validator_rule:
+  default_value: 'secret'
+  override: true
+  path: "fqdn\norganization,location\nhostgroup\nos"
+  type: LookupKey
+
+five:
+  key: custom_class_param
+  key_type: string
+  validator_rule:
+  default_value: 'abcdef'
+  path: "fqdn\norganization,location\nhostgroup"
+  override: true
+  type: LookupKey
+
+five_same_name:
+  key: custom_class_param
+  key_type: string
+  validator_rule:
+  default_value: 'abcdef'
+  path: 'organization,location'
+  override: true
+  type: LookupKey
+
+two:
+  key: ssl_port
+  key_type: string
+  validator_type: list
+  validator_rule: '443,8443'
+  default_value: 443
+  type: LookupKey
+
+four:
+  key: special_info
+  key_type: string
+  validator_rule:
+  default_value: 'secret'
+  override: true
+  path: "organization,location\nxyz\nhostgroup"
+  type: LookupKey
+
+eight:
+  key: bool_test
+  key_type: boolean
+  default_value: true
+  type: LookupKey

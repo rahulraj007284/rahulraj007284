@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PluginRoutes rendering Adding global routes 1`] = `
+Object {
+  "routes": Object {
+    "some-id-0": Object {
+      "metadata": undefined,
+      "weight": undefined,
+    },
+    "some-id-1": Object {
+      "metadata": undefined,
+      "weight": undefined,
+    },
+  },
+}
+`;
+
+exports[`Routing Service rendering a route 1`] = `
+<div>
+   Test 
+</div>
+`;

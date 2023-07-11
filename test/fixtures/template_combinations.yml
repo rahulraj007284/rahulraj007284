@@ -1,0 +1,20 @@
+---
+one:
+  provisioning_template: mystring
+  hostgroup: common
+
+two:
+  provisioning_template: mystring2
+  hostgroup: inherited
+
+three:
+  provisioning_template: myfinish
+  hostgroup: common
+
+four:
+  provisioning_template: mystring2
+  hostgroup: common
+
+five:
+  provisioning_template: myscript
+  hostgroup: common

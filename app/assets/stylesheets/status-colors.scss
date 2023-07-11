@@ -1,0 +1,37 @@
+.status-ok {
+  color: $brand-success;
+}
+
+.status-error {
+  color: $brand-danger;
+}
+
+.status-warn,
+.status-question {
+  color: $brand-warning;
+}
+
+.status-ok-link {
+  color: $brand-success;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.status-error-link {
+  color: $brand-danger;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.status-warn-link,
+.status-question-link {
+  color: $brand-warning;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

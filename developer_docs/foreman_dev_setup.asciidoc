@@ -1,0 +1,280 @@
+[[Containers]]
+= Install From Source
+:toc: right
+:toclevels: 5
+
+[[prerequisites]]
+== Prerequisites
+Foreman will run with the following requirements (aside from rubygem dependencies):
+
+* Ruby 2.7.x
+* NodeJS 14
+* NPM 6.x
+* PostgreSQL 13
+
+It’s recommended to install https://github.com/rbenv/rbenv[rbenv] or https://github.com/rvm/rvm[rvm] to manage ruby, and https://github.com/nvm-sh/nvm[nvm] to manage node and npm on your system.
+* For Fedora users, you can use this https://developer.fedoraproject.org/start/sw/web-app/rails.html[guide] for installing: rbenv, Ruby & Bundler.
+(There is no need to install Rails, as it is installed by Bundler when running `bundle install` from Foreman directory).
+
+Before installing PostgreSQL, check first that you don't already have it installed (by running `rpm -q postgresql`).
+
+You will want to make sure that you have postgresql-devel installed so the database gems can install properly.
+Also, you would also need gcc, ruby-devel, libxml-devel, libxslt-devel and libvirt-devel packages.
+
+For Fedora, CentOS or RHEL, you can issue the following commands to install all required packages:
+[source, bash]
+....
+dnf groupinstall "Development Tools" "Development Libraries"
+dnf -y install gcc-c++ git ruby ruby-devel rubygems \
+    libvirt-devel postgresql-devel openssl-devel \
+    libxml2-devel libxslt-devel zlib-devel \
+    readline-devel systemd-devel tar libcurl-devel
+....
+
+[[Setup]]
+== Setting the repository
+[source, bash]
+....
+# On Github create your own fork
+git clone https://github.com/{GITHUB_USER}/foreman.git -b develop
+cd foreman
+cp config/settings.yaml.example config/settings.yaml
+cp config/database.yml.example config/database.yml
+git remote add upstream git@github.com:theforeman/foreman.git
+gem install bundler
+bundle install
+npm install
+....
+
+* In case you get this error:
+...
+An error occurred while installing pg (PG_VERSION), and Bundler cannot continue.
+Make sure that `gem install pg -v '{PG_VERSION}' --source 'https://rubygems.org/'` succeeds before bundling.
+...
+* In case you get this error while `bundle install` caused by `ruby-libvirt` gem:
+`extconf.rb:37:in `<main>': libvirt library not found in default locations (RuntimeError)`. Try to find the `pkgconfig`, it may be in a different location than `/usr/lib64/pkgconfig`. Try to use this command: `export PKG_CONFIG_PATH=/usr/lib64/pkgconfig`.
+
+
+Run the following command:
+....
+gem install pg -v '{PG_VERSION}' -- --with-pg-config=/usr/pgsql-13/bin/pg_config
+....
+
+*Good to Notice:* 
+Foreman uses Bundler to install dependencies and get up and running. This is the preferred way to get Foreman if you want to benefit from the latest improvements. By using the git repository you can also upgrade more easily.
+
+[[Database]]
+== Setting the database
+It is important that config/database.yml is set to use the correct database in the “development” block.
+Rails (and subsequently Foreman) will use these connection settings under “development” to manage the database it uses and setup the necessary schema.
+
+If the default version of the database.yml file isn't working for you, try editing it with the following:
+[source, ruby]
+....
+development:
+ adapter: postgresql
+ host: localhost
+ username: postgres
+ password: password
+ pool: 5
+ database: foreman_development
+
+test:
+ adapter: postgresql
+ host: localhost
+ username: postgres
+ password: password
+ pool: 5
+ database: foreman_test
+....
+
+Set up database schema, precompile assets and locales:
+[source, ruby]
+....
+bundle exec rake db:create # if not already created
+bundle exec rake db:migrate
+bundle exec rake db:seed
+....
+
+The db:seed step will print out the default admin password, record this in order to log in later.
+
+The previous commands will create databases only for the development environment, for test environment you need to run also:
+[source, ruby]
+....
+RAILS_ENV=test bundle exec rake db:create
+RAILS_ENV=test bundle exec rake db:migrate
+....
+
+[[Running]]
+== Running Foreman
+In order to run Foreman you can use the following command inside your git repository:
+[source, bash]
+....
+bundle exec foreman start
+....
+
+You can also run Foreman in two separate processes - frontend and rails. This way when you need to restart Foreman (for code reload) you don't have to wait for webpack build:
+[source, bash]
+....
+# Rails
+bundle exec rails s -b 0.0.0.0 -p 3000
+
+# Frontend
+bundle exec foreman start webpack
+....
+
+Note: You could also create a .env file which lets you customize your individual working environment variables.
+`NOTIFICATIONS_POLLING` and `REDUX_LOGGER` are options that can be set in an .env file (as well as in the cli call).
+`REDUX_LOGGER` has a boolean value which controls if Foreman will print each redux call in the web console,
+and `NOTIFICATIONS_POLLING` is the notification polling interval in ms.
+
+=== Resetting password
+If you can't find your admin user's password, you can update its password from rails console:
+[source, ruby]
+....
+bundle exec rake permissions:reset password=changeme
+....
+
+Now you can login with `admin` user and its new password.
+
+=== Seeding mock data
+[source, ruby]
+....
+bundle exec rake seed:forgeries
+....
+
+All rake tasks are available with the following command:
+[source, ruby]
+....
+bundle exec rake -T
+....
+
+=== Running tests in Foreman
+Make sure to run tests from the Foreman directory.
+
+==== RuboCop Tests
+To run RuboCop test, use the following command:
+[source, shell]
+....
+bundle exec rubocop [<path_to_file>]
+....
+
+You can also run RuboCop in an https://docs.rubocop.org/rubocop/usage/autocorrect.html[autocorrect mode], where it will try to automatically fix the problems it found in your code:
+[source, shell]
+....
+bundle exec rubocop --auto-correct # (only when it's safe)
+bundle exec rubocop --auto-correct-all # (safe and unsafe)
+....
+
+==== Foreman Tests
+To run Foreman's tests:
+[source, shell]
+....
+bundle exec rake test [TEST=<path_to_file>]
+....
+
+To run a specific test:
+[source, shell]
+....
+bundle exec rails test <path_to_file>:<test_line_number>
+....
+
+===== Foreman Integration Tests
+To run Foreman's integration tests you need to have https://github.com/theforeman/foreman/blob/develop/developer_docs/foreman_dev_setup.asciidoc#ChromeDriver[ChromeDriver] installed on your machine.
+
+Foreman's integration tests use the https://github.com/teamcapybara/capybara[Capybara] test framework. For more information about the Capybara DSL check out the https://rubydoc.info/github/teamcapybara/capybara/master[Capybara API].
+
+Adding `DEBUG_JS_TEST=1` to the test run, will open a web browser and run the tests in chrome.
+
+To run Foreman's integration tests:
+[source, shell]
+....
+npm install # make sure to install npm dependencies for webpack
+bundle exec rake webpack:compile
+bundle exec rake test TEST=test/integration/<test_file> [DEBUG_JS_TEST=1]
+....
+
+
+[[Pry]]
+== Debugging Foreman with Pry
+https://github.com/pry/pry[Pry] is a runtime developer console and IRB (interactive Ruby) alternative with powerful introspection capabilities.
+You can use use Pry as a developer console or as a debugger.
+Pry gem is required by Foreman, meaning that Bundler installs it for you.
+
+To invoke the debugger, place `binding.pry` somewhere in your code as follows:
+[source, ruby]
+....
+require 'pry'; binding.pry
+....
+When the Ruby interpreter hits that code, execution stops, and you can type in commands to debug the state of the program.
+
+=== Useful Pry Commands
+* `pry` -Opens the Pry console in your terminal
+* `exit` -Exits current loop
+* `exit!` -Exits Pry console
+
+=== Stepping
+To step through the code, you can use the following commands:
+
+* `break`: Manage breakpoints.
+* `step`: Step execution into the next line or method. Takes an optional numeric argument to step multiple times.
+* `next`: Step over to the next line within the same frame. Also takes an optional numeric argument to step multiple lines.
+* `finish`: Execute until current stack frame returns.
+* `continue`: Continue program execution and end the Pry session.
+
+[[ChromeDriver]]
+== Installing ChromeDriver
+https://chromedriver.chromium.org/[ChromeDriver] is a separate executable that Selenium WebDriver uses to control Chrome. We use ChromeDriver to run the integration tests in Foreman.
+
+[[plugins]]
+== Installing plugins
+In order to use a plugin, you'll need to install its gem.
+
+From source code:
+[source, ruby]
+....
+cd foreman
+echo "gem '<PLUGIN_NAME>', path: '../PLUGIN_PATH'" >> bundler.d/<PLUGIN_NAME>.local.rb
+....
+
+From github:
+[source, ruby]
+....
+cd foreman
+echo "gem '<PLUGIN_NAME>', git: 'https://github.com/theforeman/<PLUGIN_NAME>.git'" >> bundler.d/<PLUGIN_NAME>.local.rb
+....
+
+Then run `bundle install` from foreman to install the plugin and its dependencies.
+In case there are node modules dependencies that don't exist in foreman,
+you will need to install them in the plugin via `npm install`.
+Another option is to re-run `npm install` in foreman,
+which will trigger in the end a postinstall script that will install all node modules of plugins.
+
+After you've installed the dependencies,
+run `bundle exec rake db:migrate` and `bundle exec rake db:seed` to update the database scheme.
+
+=== Running tests in plugins
+Make sure to run plugins tests from the Foreman directory.
+In order to run rubocop test in the plugin, use the following command:
+[source, ruby]
+....
+bundle exec rake <PLUGIN_NAME>:rubocop
+....
+
+To run all of the plugin's tests:
+[source, ruby]
+....
+npm install # make sure to install npm dependencies for webpack
+bundle exec rake webpack:compile # only needed if you have integration tests that uses JS
+bundle exec rake test:<PLUGIN_NAME>
+....
+
+To run a specific plugin's test:
+[source, ruby]
+....
+bundle exec rake test TEST="../<PLUGIN_PATH>/test/PATH/TO/TEST"
+....
+
+[[Forklift]]
+== Forklift
+https://github.com/theforeman/forklift[Forklift] provides tools to create Foreman+Katello environments for development, testing, and production configurations. Follow the https://github.com/theforeman/forklift/blob/master/docs/vagrant.md[installation guide].

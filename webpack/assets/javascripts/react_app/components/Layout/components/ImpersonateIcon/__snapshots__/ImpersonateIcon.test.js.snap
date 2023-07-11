@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ImpersonateIcon should render 1`] = `
+<Fragment>
+  <Tooltip
+    content="You are impersonating another user, click to stop the impersonation"
+    position="bottom"
+  >
+    <span
+      className="nav-item-iconic"
+      onClick={[Function]}
+    >
+      <EyeIcon
+        className="blink-image"
+        color="currentColor"
+        noVerticalAlign={false}
+        size="sm"
+      />
+    </span>
+  </Tooltip>
+  <MessageDialog
+    accessibleDescription=""
+    accessibleName=""
+    className=""
+    enforceFocus={true}
+    footer={null}
+    icon={null}
+    onHide={[Function]}
+    primaryAction={[Function]}
+    primaryActionButtonBsStyle="primary"
+    primaryActionButtonContent="Confirm"
+    primaryContent="You are about to stop impersonating other user. Are you sure?"
+    secondaryAction={[Function]}
+    secondaryActionButtonBsStyle="default"
+    secondaryActionButtonContent="Cancel"
+    secondaryContent={null}
+    show={false}
+    title="Confirm Action"
+  />
+</Fragment>
+`;
